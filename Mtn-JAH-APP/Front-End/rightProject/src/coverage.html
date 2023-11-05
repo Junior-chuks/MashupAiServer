@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Place Coverage Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            height: 400px;
+        }
+    </style>
+
+    <!-- Include Leaflet CSS and JavaScript -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+</head>
+<body>
+<div class="container">
+    <h1>Place Coverage Checker</h1>
+    <input type="text" id="locationInput" placeholder="Enter a place">
+    <button id="searchButton">Search</button>
+    <button id="dropPinButton">Drop a Pin in London</button>
+    <div id="coverageResult">
+        <h2>Coverage Result</h2>
+        <p id="resultText">Coverage information will be displayed here.</p>
+    </div>
+</div>
+
+<!-- Create a div for the map -->
+<div id="map"></div>
+
+<script>
+    // Define the map and its initial view
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+    // Add an OpenStreetMap tile layer
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    // Define predefined locations with coverage information
+    var locations = [
+        { name: "London", latlng: [51.505, -0.09], coverage: "High Coverage" },
+        // Add more locations here
+    ];
+
+    // Function to create markers for predefined locations
+    function createMarkers() {
+        locations.forEach(function(location) {
+            var marker = L.marker(location.latlng).addTo(map);
+            marker.bindPopup(`<b>${location.name}</b><br>Coverage: ${location.coverage}`);
+        });
+    }
+
+    createMarkers();
+
+    // Function to display coverage information for a searched location
+    document.getElementById("searchButton").addEventListener("click", function() {
+        var locationInput = document.getElementById("locationInput").value;
+        var resultText = document.getElementById("resultText");
+
+        // Find the matching location and display coverage
+        var location = locations.find(function(item) {
+            return item.name.toLowerCase() === locationInput.toLowerCase();
+        });
+
+        if (location) {
+            resultText.textContent = `Coverage information for "${location.name}": ${location.coverage}`;
+            // Center the map on the searched location
+            map.setView(location.latlng, 13);
+        } else {
+            resultText.textContent = `Coverage information for "${locationInput}" is not available.`;
+        }
+    });
+
+    // Function to handle the "Drop a Pin" button click
+    document.getElementById("dropPinButton").addEventListener("click", function() {
+        // Allow the user to drop a pin on the map and generate random coverage
+        var coverageOptions = ["High Coverage", "Medium Coverage", "Low Coverage", "No Coverage"];
+
+        map.on('click', function(e) {
+            var randomCoverage = coverageOptions[Math.floor(Math.random() * coverageOptions.length)];
+            L.marker(e.latlng).addTo(map)
+                .bindPopup(`Coverage: ${randomCoverage}`)
+                .openPopup();
+        });
+    });
+</script>
+</body>
+</html>

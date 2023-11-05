@@ -25,9 +25,7 @@ public class JobService {
 
     // Example method to retrieve jobs from a database (simulated)
     private List<Job> getJobsFromDatabase() {
-        // Simulated method to fetch jobs from a database
-        // Replace this with actual database querying
-        // Example list of jobs
+
         return List.of(
                 new Job("Software Developer", "Durban", List.of(new String[]{"Coding and Programming","Design and Development","Design and Development"})),
                 new Job("Sales Manager", "Los Angeles", List.of(new String[]{"Sales Strategy Development","Team Leadership","Sales Monitoring and Analysis"})),
